@@ -9,35 +9,38 @@
 | CUDA | 12.2 |
 | Driver | 580.95.05 |
 
-## Results
+## Model
 
-Training 3-layer MLP on MNIST (60k train / 10k test), release mode.
+6-layer MLP: 784 → 4096 → 4096 → 2048 → 1024 → 256 → 10 (~30M parameters)
 
-### CPU-only (NdArray backend, batch_size=32, lr=0.001, 5 epochs)
+## Results (same config: batch=1024, lr=0.001, 10 epochs)
 
-| Metric | Value |
-|---|---|
-| Total wall time | 2m 26s |
-| Training time | ~146s |
-| Per epoch (steady-state) | ~29s |
-| Peak memory | 480 MB |
-| Final accuracy | 97.25% |
-
-### GPU-accelerated (WGPU backend, batch_size=256, lr=0.008, 20 epochs)
+### CPU (NdArray backend)
 
 | Metric | Value |
 |---|---|
-| Total wall time | 15.1s |
-| Training time | 14.03s |
-| Per epoch (steady-state) | ~650ms |
-| Peak memory | 583 MB |
-| Final accuracy | 97.60% |
-| Peak accuracy | 97.60% (epochs 13, 20) |
+| Total time | 1458.4s (24.3 min) |
+| Per epoch | ~145.8s |
+| Final accuracy | 98.05% |
+| Final loss | 0.0210 |
+| Peak memory | 987 MB |
 
-### Speedup
+### GPU (WGPU backend)
 
-| Metric | Improvement |
+| Metric | Value |
 |---|---|
-| Per epoch (steady-state) | **45x faster** |
-| To reach 97.25% accuracy | CPU: 146s (5 ep) vs GPU: ~8s (4 ep) — **18x faster** |
-| Best accuracy | GPU 97.60% > CPU 97.25% |
+| Total time | 205.2s (3.4 min) |
+| Per epoch (steady-state) | ~13.5s |
+| First epoch (shader compile) | 83.7s |
+| Final accuracy | 97.78% |
+| Final loss | 0.0166 |
+| Peak memory | 987 MB |
+
+### Comparison
+
+| Metric | Value |
+|---|---|
+| **Speedup (total)** | **7.1x** |
+| **Speedup (steady-state per epoch)** | **10.8x** |
+| Loss curves | Overlapping (identical training) |
+| Accuracy difference | < 0.3% (stochastic variance) |
