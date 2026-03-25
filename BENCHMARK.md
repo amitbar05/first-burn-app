@@ -11,9 +11,9 @@
 
 ## Results
 
-Training 3-layer MLP on MNIST (60k train / 10k test), 20 epochs, release mode.
+Training 3-layer MLP on MNIST (60k train / 10k test), release mode.
 
-### CPU-only (NdArray backend, batch_size=32, 5 epochs)
+### CPU-only (NdArray backend, batch_size=32, lr=0.001, 5 epochs)
 
 | Metric | Value |
 |---|---|
@@ -23,19 +23,21 @@ Training 3-layer MLP on MNIST (60k train / 10k test), 20 epochs, release mode.
 | Peak memory | 480 MB |
 | Final accuracy | 97.25% |
 
-### GPU-accelerated (WGPU backend, batch_size=256, 20 epochs)
+### GPU-accelerated (WGPU backend, batch_size=256, lr=0.008, 20 epochs)
 
 | Metric | Value |
 |---|---|
-| Total wall time | 12.49s |
-| Training time | 12.49s |
-| Per epoch (steady-state) | ~530ms |
+| Total wall time | 15.1s |
+| Training time | 14.03s |
+| Per epoch (steady-state) | ~650ms |
 | Peak memory | 583 MB |
-| Final accuracy | 97.04% |
+| Final accuracy | 97.60% |
+| Peak accuracy | 97.60% (epochs 13, 20) |
 
-### Speedup (per epoch)
+### Speedup
 
 | Metric | Improvement |
 |---|---|
-| Per epoch (steady-state) | **58x faster** |
-| 20 GPU epochs vs 5 CPU epochs | **4x more training in 1/12th the time** |
+| Per epoch (steady-state) | **45x faster** |
+| To reach 97.25% accuracy | CPU: 146s (5 ep) vs GPU: ~8s (4 ep) — **18x faster** |
+| Best accuracy | GPU 97.60% > CPU 97.25% |

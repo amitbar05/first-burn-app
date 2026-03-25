@@ -52,7 +52,8 @@ impl<B: Backend> MnistModel<B> {
 fn main() {
     let epochs = 20;
     let batch_size = 256;
-    let lr = 0.001;
+    // Linear lr scaling: base_lr * (batch_size / base_batch_size)
+    let lr = 0.001 * (256.0 / 32.0);
 
     println!("Loading MNIST dataset...");
     let t0 = Instant::now();
@@ -92,7 +93,6 @@ fn main() {
     for epoch in 0..epochs {
         let epoch_start = Instant::now();
         let mut total_loss = 0.0f32;
-        let mut loss_samples = 0;
 
         for batch_idx in 0..num_batches {
             let start = batch_idx * batch_size;
@@ -104,20 +104,16 @@ fn main() {
             let output = model.forward(images);
             let loss = loss_fn.forward(output, labels);
 
-            // Only sync loss to CPU for periodic logging
-            if batch_idx % 200 == 0 || batch_idx == num_batches - 1 {
-                let loss_val: f32 = loss.to_data().to_vec().unwrap()[0];
-                total_loss += loss_val;
-                loss_samples += 1;
-                if batch_idx % 200 == 0 {
-                    println!(
-                        "  Epoch {} Batch {}/{} Loss: {:.4}",
-                        epoch + 1,
-                        batch_idx,
-                        num_batches,
-                        loss_val
-                    );
-                }
+            let loss_val: f32 = loss.to_data().to_vec().unwrap()[0];
+            total_loss += loss_val;
+            if batch_idx % 100 == 0 {
+                println!(
+                    "  Epoch {} Batch {}/{} Loss: {:.4}",
+                    epoch + 1,
+                    batch_idx,
+                    num_batches,
+                    loss_val
+                );
             }
 
             let grads = loss.backward();
@@ -134,11 +130,7 @@ fn main() {
             batch_size,
         );
 
-        let avg_loss = if loss_samples > 0 {
-            total_loss / loss_samples as f32
-        } else {
-            0.0
-        };
+        let avg_loss = total_loss / num_batches as f32;
         epoch_losses.push(avg_loss);
         let acc = correct as f32 / total as f32 * 100.0;
         println!(
