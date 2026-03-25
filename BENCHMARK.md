@@ -11,9 +11,9 @@
 
 ## Results
 
-Training 3-layer MLP on MNIST (60k train / 10k test), 5 epochs, release mode.
+Training 3-layer MLP on MNIST (60k train / 10k test), 20 epochs, release mode.
 
-### Before: CPU-only (NdArray backend, batch_size=32)
+### CPU-only (NdArray backend, batch_size=32, 5 epochs)
 
 | Metric | Value |
 |---|---|
@@ -23,20 +23,19 @@ Training 3-layer MLP on MNIST (60k train / 10k test), 5 epochs, release mode.
 | Peak memory | 480 MB |
 | Final accuracy | 97.25% |
 
-### After: GPU-accelerated (WGPU backend, batch_size=256)
+### GPU-accelerated (WGPU backend, batch_size=256, 20 epochs)
 
 | Metric | Value |
 |---|---|
-| Total wall time | 5.1s |
-| Training time | 3.98s |
-| Per epoch (steady-state) | ~500ms |
+| Total wall time | 12.49s |
+| Training time | 12.49s |
+| Per epoch (steady-state) | ~530ms |
 | Peak memory | 583 MB |
-| Final accuracy | 96.47% |
+| Final accuracy | 97.04% |
 
-### Speedup
+### Speedup (per epoch)
 
 | Metric | Improvement |
 |---|---|
-| Total wall time | **29x faster** |
-| Training time | **37x faster** |
 | Per epoch (steady-state) | **58x faster** |
+| 20 GPU epochs vs 5 CPU epochs | **4x more training in 1/12th the time** |

@@ -50,7 +50,7 @@ impl<B: Backend> MnistModel<B> {
 }
 
 fn main() {
-    let epochs = 5;
+    let epochs = 20;
     let batch_size = 256;
     let lr = 0.001;
 
